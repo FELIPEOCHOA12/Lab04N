@@ -4,10 +4,10 @@
     "description": "Proyecto de ejemplo con Docker y Node.js",
     "main": "app.js",
     "scripts": {
-      "start": "node app.js"
+        "start": "node app.js"
     },
     "dependencies": {
-      "express": "^4.17.1"
+        "express": "^4.17.1",
+        "mysql2": "^3.14.0"
     }
-  }
-  
+}

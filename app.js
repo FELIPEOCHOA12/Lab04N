@@ -1,46 +1,65 @@
 const express = require('express');
+const mysql = require('mysql2');
 const app = express();
 const port = 9000;
 
-// Página principal con botones
+// Conexión a MySQL
+const db = mysql.createConnection({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'lab04'
+});
+
+db.connect(err => {
+  if (err) {
+    console.error('Error conectando a la base de datos:', err);
+    return;
+  }
+  console.log('Conectado a la base de datos MySQL');
+
+  // Crear tablas si no existen
+  db.query(`CREATE TABLE IF NOT EXISTS clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100)
+  )`, console.log);
+
+  db.query(`CREATE TABLE IF NOT EXISTS productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100)
+  )`, console.log);
+
+  // Insertar datos aleatorios (evita duplicar con EXISTS o al inicio)
+  db.query(`INSERT INTO clientes (nombre) VALUES ('Cliente 1'), ('Cliente 2')`);
+  db.query(`INSERT INTO productos (nombre) VALUES ('Producto A'), ('Producto B')`);
+});
+
+// Ruta principal con botones
 app.get('/', (req, res) => {
   res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Mi Proyecto Docker</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          margin-top: 50px;
-        }
-        button {
-          padding: 15px 30px;
-          margin: 10px;
-          font-size: 16px;
-          cursor: pointer;
-        }
-      </style>
-    </head>
-    <body>
-      <h1>Bienvenido a mi proyecto Docker</h1>
-      <button onclick="location.href='/clientes'">Clientes</button>
-      <button onclick="location.href='/productos'">Productos</button>
-    </body>
-    </html>
+    <h1>Bienvenido a mi Proyecto Docker</h1>
+    <button onclick="location.href='/clientes'">Clientes</button>
+    <button onclick="location.href='/productos'">Productos</button>
   `);
 });
 
-// Rutas adicionales
+// Mostrar datos de clientes
 app.get('/clientes', (req, res) => {
-  res.send('Página de Clientes');
+  db.query('SELECT * FROM clientes', (err, results) => {
+    if (err) return res.status(500).send('Error al obtener clientes');
+    res.json(results);
+  });
 });
 
+// Mostrar datos de productos
 app.get('/productos', (req, res) => {
-  res.send('Página de Productos');
+  db.query('SELECT * FROM productos', (err, results) => {
+    if (err) return res.status(500).send('Error al obtener productos');
+    res.json(results);
+  });
 });
 
+// Servidor
 app.listen(port, () => {
   console.log(`Aplicación corriendo en http://localhost:${port}`);
 });

@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  app:
+    build: .
+    ports:
+      - "9000:9000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: felipe        # Usuario para la conexión (debe coincidir con MYSQL_USER en db)
+      DB_PASSWORD: root      # Contraseña para la conexión (debe coincidir con MYSQL_PASSWORD en db)
+      DB_NAME: lab04N        # Nombre de la base de datos (debe coincidir con MYSQL_DATABASE en db)
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root        # Contraseña para el usuario root
+      MYSQL_DATABASE: lab04N           # Nombre de la base de datos a crear
+      MYSQL_USER: felipe               # Usuario para la base de datos
+      MYSQL_PASSWORD: root             # Contraseña del usuario
+    ports:
+      - "3306:3306"
+
