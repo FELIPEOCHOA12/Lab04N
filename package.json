@@ -1,0 +1,13 @@
+{
+    "name": "lab04n",
+    "version": "1.0.0",
+    "description": "Proyecto de ejemplo con Docker y Node.js",
+    "main": "app.js",
+    "scripts": {
+      "start": "node app.js"
+    },
+    "dependencies": {
+      "express": "^4.17.1"
+    }
+  }
+  
